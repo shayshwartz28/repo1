@@ -36,9 +36,10 @@ public class Stock {
 	}
 	
 	public String getHtmlDescription() {
+		Date date = getDate();
 		return  " <b> Stock symbol </b>: " + getSymbol() + 
 				" <b> ask </b>: " + getAsk() + 
 				" <b> bid </b>: " + getBid() + 
-				" <b> Date </b>: " + getDate();
+				" <b> Date </b>: " + date.getMonth() + "/" + date.getDate() + "/" + date.getYear();
 	}
 }
