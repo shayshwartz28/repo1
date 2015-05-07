@@ -2,15 +2,24 @@ package com.myorg.javacourse.service;
 
 import java.util.Date;
 
-import com.myorg.javacourse.Stock;
 import com.myorg.javacourse.model.Portfolio;
+import com.myorg.javacourse.model.Stock;
 
+
+/**
+ * The Class PortfolioManager.
+ */
 public class PortfolioManager {
 
+	/**
+	 * Gets the portfolio.
+	 *
+	 * @return the portfolio
+	 */
 	public Portfolio getPortfolio() {
 
 		Portfolio portfolio = new Portfolio();
-		portfolio.setTitle("portfolio");
+		portfolio.setTitle("Portfolio #1");
 
 		Date date = new Date();
 		date.setDate(15);
@@ -41,5 +50,7 @@ public class PortfolioManager {
 
 		return portfolio;
 	}
+	
+	
 
 }
