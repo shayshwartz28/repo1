@@ -7,7 +7,7 @@ import com.myorg.javacourse.model.Stock;
 
 
 /**
- * The Class PortfolioManager.
+ * The Class PortfolioManager with the details of all the stocks.
  */
 public class PortfolioManager {
 

@@ -14,6 +14,7 @@ import com.myorg.javacourse.service.PortfolioManager;
 // TODO: Auto-generated Javadoc
 /**
  * The Class PortfolioServlet.
+ * commands to print, remove and change the stocks.
  */
 public class PortfolioServlet extends HttpServlet {
     

@@ -36,9 +36,9 @@ public class Portfolio {
 	
 	/**
 	 * Instantiates a new portfolio.
-	 *
+	 * Check what the protfolio size and make new one
 	 * @param title the title
-	 * @param mAX_PROTFOLIO_SIZE the m a x_ protfoli o_ size
+	 * @param mAX_PROTFOLIO_SIZE the max_protfolio_size
 	 */
 	public Portfolio(String title, int mAX_PROTFOLIO_SIZE) {
 		super();
@@ -55,7 +55,7 @@ public class Portfolio {
 	
 	/**
 	 * Instantiates a new portfolio.
-	 *
+	 * Take the details of the object and make new array (not by pointer)
 	 * @param other the other
 	 */
 	public Portfolio(Portfolio other) {	
@@ -81,8 +81,8 @@ public class Portfolio {
 	}
 
 	/**
-	 * Removes the stock.
-	 *
+	 * Removes cell by the stock index that have been given.
+	 * 
 	 * @param stockIndex the stock index
 	 */
 	public void removeStock(int stockIndex) {

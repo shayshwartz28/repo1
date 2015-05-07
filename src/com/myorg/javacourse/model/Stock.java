@@ -49,7 +49,7 @@ public class Stock {
 
 	/**
 	 * Instantiates a new stock.
-	 *
+	 * 
 	 * @param other the other
 	 */
 	public Stock(Stock other) {
