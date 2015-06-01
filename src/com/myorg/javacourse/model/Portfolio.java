@@ -1,10 +1,13 @@
 package com.myorg.javacourse.model;
 
+import org.algo.model.PortfolioInterface;
+import org.algo.model.StockInterface;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class Portfolio.
  */
-public class Portfolio {
+public class Portfolio implements PortfolioInterface {
 
 	/**
 	 * The Enum ALGO_RECOMMENDATION.
@@ -25,10 +28,10 @@ public class Portfolio {
 	private String title;
 
 	/** The max protfolio size. */
-	private final int MAX_PROTFOLIO_SIZE;
+	private final int MAX_PORTFOLIO_SIZE;
 
 	/** The stocks. */
-	private Stock[] stocks;
+	private StockInterface[] stocks;
 
 	/** The portfolio size. */
 	private int portfolioSize = 0;
@@ -42,8 +45,8 @@ public class Portfolio {
 	public Portfolio() {
 		super();
 		this.title = "Portfolio Title";
-		MAX_PROTFOLIO_SIZE = 5;
-		stocks = new Stock[MAX_PROTFOLIO_SIZE];
+		MAX_PORTFOLIO_SIZE = 5;
+		stocks = new Stock[MAX_PORTFOLIO_SIZE];
 	}
 
 	/**
@@ -63,8 +66,8 @@ public class Portfolio {
 			mAX_PROTFOLIO_SIZE = 5;
 		}
 
-		MAX_PROTFOLIO_SIZE = mAX_PROTFOLIO_SIZE;
-		stocks = new Stock[MAX_PROTFOLIO_SIZE];
+		MAX_PORTFOLIO_SIZE = mAX_PROTFOLIO_SIZE;
+		stocks = new Stock[MAX_PORTFOLIO_SIZE];
 	}
 
 	/**
@@ -74,13 +77,55 @@ public class Portfolio {
 	 * @param other
 	 *            the other
 	 */
-	public Portfolio(Portfolio other) {
-		this(other.getTitle(), other.getMAX_PROTFOLIO_SIZE());
-		this.portfolioSize = other.getPortfolioSize();
 
-		for (int i = 0; i < portfolioSize; i++) {
-			stocks[i] = new Stock(other.getStocks()[i]);
+	public Portfolio(Portfolio other) {
+		this(other.getTitle(), other.getMAX_PROTFOLIO_SIZE(),
+				other.getStocks(), other.portfolioSize, other.getBalance());
+	}
+
+	/**
+	 * Instantiates a new portfolio.
+	 *
+	 * @param title
+	 *            the title
+	 * @param mAX_PORTFOLIO_SIZE
+	 *            the m a x_ portfoli o_ size
+	 * @param stocks
+	 *            the stocks
+	 * @param portfolioSize
+	 *            the portfolio size
+	 * @param balance
+	 *            the balance
+	 */
+	public Portfolio(String title, int mAX_PORTFOLIO_SIZE,
+			StockInterface[] stocks, int portfolioSize, float balance) {
+		super();
+		this.title = title;
+		MAX_PORTFOLIO_SIZE = mAX_PORTFOLIO_SIZE;
+		this.stocks = stocks;
+		this.portfolioSize = portfolioSize;
+		this.balance = balance;
+	}
+
+	/**
+	 * Instantiates a new portfolio.
+	 *
+	 * @param stockArray
+	 *            the stock array
+	 */
+	public Portfolio(Stock[] stockArray) {
+		if (stockArray == null || stockArray.length <= 3) {
+			MAX_PORTFOLIO_SIZE = 5;
+		} else {
+			MAX_PORTFOLIO_SIZE = stockArray.length * 2;
 		}
+		stocks = new Stock[MAX_PORTFOLIO_SIZE];
+
+		for (portfolioSize = 0; portfolioSize < stockArray.length; portfolioSize++) {
+
+			stocks[portfolioSize] = stockArray[portfolioSize];
+		}
+
 	}
 
 	/**
@@ -91,7 +136,7 @@ public class Portfolio {
 	 */
 	public void addStock(Stock stock) {
 
-		if (portfolioSize < stocks.length) {
+		if (stock != null && portfolioSize < stocks.length) {
 
 			if (getStockIndex(stock.getSymbol()) != -1) {
 				// stock already exist in array so
@@ -102,7 +147,7 @@ public class Portfolio {
 
 			// if this is a new stock, set quantity 0 and add if to portfolio
 			stock.setStockQuantity(0);
-			stocks[portfolioSize] = stock;
+			stocks[portfolioSize] = (StockInterface) stock;
 			portfolioSize++;
 		} else {
 			System.err.println("Can't add new stock, portfolio can have only "
@@ -118,7 +163,8 @@ public class Portfolio {
 	public float getStockValue() {
 		float total = 0;
 		for (int i = 0; i < getPortfolioSize(); i++) {
-			total += stocks[i].getStockQuantity() * stocks[i].getBid();
+			total += ((Stock) stocks[i]).getStockQuantity()
+					* stocks[i].getBid();
 		}
 		return total;
 	}
@@ -189,7 +235,7 @@ public class Portfolio {
 			System.err.println("Stock:" + stockSymbol + " not found.");
 			return false;
 		}
-		Stock s = stocks[stockIndex];
+		Stock s = (Stock) stocks[stockIndex];
 		if (s.getStockQuantity() < quantity || quantity < -1 || quantity == 0) {
 			System.err.println("Sell Stock: cant sell " + quantity
 					+ " from stock.");
@@ -230,7 +276,7 @@ public class Portfolio {
 			if (stockIndex == -1)
 				return false;
 		}
-		Stock s = stocks[stockIndex];
+		Stock s = (Stock) stocks[stockIndex];
 		if (quantity < -1 || quantity == 0) {
 			System.err.println("Buy Stock: cant Buy " + quantity
 					+ " from stock.");
@@ -266,8 +312,12 @@ public class Portfolio {
 		if (portfolioSize > 0 && stockIndex >= 0 && stockIndex < portfolioSize) {
 			for (int i = stockIndex; i < portfolioSize - 1; i++) {
 				stocks[i] = stocks[i + 1];
+				stocks[i + 1] = null;
 			}
 			portfolioSize--;
+			if (portfolioSize == 0) {
+				stocks[0] = null;
+			}
 		}
 	}
 
@@ -296,7 +346,7 @@ public class Portfolio {
 	 * @return the mAX_PROTFOLIO_SIZE
 	 */
 	public int getMAX_PROTFOLIO_SIZE() {
-		return MAX_PROTFOLIO_SIZE;
+		return MAX_PORTFOLIO_SIZE;
 	}
 
 	/**
@@ -304,7 +354,7 @@ public class Portfolio {
 	 *
 	 * @return the stocks
 	 */
-	public Stock[] getStocks() {
+	public StockInterface[] getStocks() {
 		return stocks;
 	}
 
@@ -332,7 +382,8 @@ public class Portfolio {
 		htmlStr += "<table style=\"width:50%\">";
 
 		for (int i = 0; i < getPortfolioSize(); i++) {
-			htmlStr += "<tr>" + getStocks()[i].getHtmlDescription() + " </tr>";
+			htmlStr += "<tr>" + ((Stock) getStocks()[i]).getHtmlDescription()
+					+ " </tr>";
 		}
 
 		htmlStr += "</table>";
@@ -378,6 +429,22 @@ public class Portfolio {
 			System.err.println("Cannot update to negative balance.");
 			return false;
 		}
+	}
+
+	/**
+	 * Find stock.
+	 *
+	 * @param symbol
+	 *            the symbol
+	 * @return the stock interface
+	 */
+	public StockInterface findStock(String symbol) {
+		int stockIndex = getStockIndex(symbol);
+
+		if (stockIndex == -1)
+			return null;
+		else
+			return this.stocks[stockIndex];
 	}
 
 }

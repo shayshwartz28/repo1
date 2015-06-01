@@ -2,13 +2,15 @@ package com.myorg.javacourse.model;
 
 import java.util.Date;
 
+import org.algo.model.StockInterface;
+
 import com.myorg.javacourse.model.Portfolio.ALGO_RECOMMENDATION;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class Stock.
  */
-public class Stock {
+public class Stock implements StockInterface {
 
 	/** The symbol. */
 	private String symbol;
@@ -23,7 +25,7 @@ public class Stock {
 	private Date date;
 
 	/** The recommendation. */
-	private ALGO_RECOMMENDATION recommendation;
+	private ALGO_RECOMMENDATION recommendation = ALGO_RECOMMENDATION.HOLD;
 
 	/** The stock quantity. */
 	private int stockQuantity;
