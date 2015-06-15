@@ -19,6 +19,11 @@ import org.algo.service.MarketService;
 import org.algo.service.PortfolioManagerInterface;
 import org.algo.service.ServiceManager;
 
+import com.myorg.javacourse.exception.BalanceExeception;
+import com.myorg.javacourse.exception.InvalidStockQuantityException;
+import com.myorg.javacourse.exception.PortfolioFullException;
+import com.myorg.javacourse.exception.StockAlreadyExistsException;
+import com.myorg.javacourse.exception.StockNotExistException;
 import com.myorg.javacourse.model.Portfolio;
 import com.myorg.javacourse.model.Portfolio.ALGO_RECOMMENDATION;
 import com.myorg.javacourse.model.Stock;
@@ -75,7 +80,7 @@ public class PortfolioManager implements PortfolioManagerInterface {
 			datastoreService.saveToDataStore(toDtoList(update));
 
 		} catch (SymbolNotFoundInNasdaq e) {
-			System.out.println(e.getMessage());
+			System.err.println(e.getMessage());
 		}
 	}
 
@@ -141,9 +146,11 @@ public class PortfolioManager implements PortfolioManagerInterface {
 	 *
 	 * @param symbol
 	 *            the symbol
+	 * @throws PortfolioException
+	 *             the portfolio exception
 	 */
 	@Override
-	public void addStock(String symbol) {
+	public void addStock(String symbol) throws PortfolioException {
 		Portfolio portfolio = (Portfolio) getPortfolio();
 
 		try {
@@ -160,7 +167,7 @@ public class PortfolioManager implements PortfolioManagerInterface {
 
 			flush(portfolio);
 		} catch (SymbolNotFoundInNasdaq e) {
-			System.out.println("Stock Not Exists: " + symbol);
+			throw new PortfolioException("Stock Not Found In Nasdaq: " + symbol);
 		}
 	}
 
@@ -187,9 +194,23 @@ public class PortfolioManager implements PortfolioManagerInterface {
 			portfolio.buyStock(stock.getSymbol(), quantity);
 			flush(portfolio);
 		} catch (Exception e) {
-			System.out.println("Exception: " + e);
+			throw new PortfolioException(e.getMessage());
 		}
 	}
+
+	/*
+	 * public void buyStock(String symbol, int quantity) throws
+	 * PortfolioException {
+	 * 
+	 * Portfolio portfolio = (Portfolio) getPortfolio();
+	 * 
+	 * Stock stock = (Stock) portfolio.findStock(symbol); if (stock == null) {
+	 * try { stock = fromDto(ServiceManager.marketService().getStock(symbol)); }
+	 * catch (SymbolNotFoundInNasdaq e) { throw new
+	 * PortfolioException("Stock Not Found In Nasdaq: " + symbol); } }
+	 * 
+	 * portfolio.buyStock(stock.getSymbol(), quantity); flush(portfolio); }
+	 */
 
 	/**
 	 * update database with new portfolio's data.
@@ -273,6 +294,7 @@ public class PortfolioManager implements PortfolioManagerInterface {
 	 * 
 	 * @param dto
 	 * @return portfolio
+	 * @throws BalanceExeception
 	 */
 	private Portfolio fromDto(PortfolioDto dto) {
 		StockDto[] stocks = dto.getStocks();
@@ -352,7 +374,6 @@ public class PortfolioManager implements PortfolioManagerInterface {
 		Portfolio portfolio = (Portfolio) getPortfolio();
 		portfolio.updateBalance(value);
 		flush(portfolio);
-
 	}
 
 	/*
@@ -381,6 +402,5 @@ public class PortfolioManager implements PortfolioManagerInterface {
 		Portfolio portfolio = (Portfolio) getPortfolio();
 		portfolio.removeStock(symbol);
 		flush(portfolio);
-
 	}
 }
